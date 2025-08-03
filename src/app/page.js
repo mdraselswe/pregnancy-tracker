@@ -1,7 +1,18 @@
 'use client'
 import React, { useState, useEffect } from 'react'
 
-// SVG Icons for better UI
+// --- Helper Functions ---
+
+// ইংরেজি সংখ্যাকে বাংলা সংখ্যায় রূপান্তর করার ফাংশন
+const toBengaliNumber = (num) => {
+  const bengaliDigits = ['০', '১', '২', '৩', '৪', '৫', '৬', '৭', '৮', '৯']
+  return String(num).replace(
+    /[0-9]/g,
+    (digit) => bengaliDigits[parseInt(digit)]
+  )
+}
+
+// --- SVG Icons ---
 const BabyIcon = () => (
   <svg
     xmlns='http://www.w3.org/2000/svg'
@@ -55,15 +66,18 @@ const HeartIcon = () => (
   </svg>
 )
 
-// Main App Component
+// --- Main App Component ---
 export default function App() {
   const [pregnancyDetails, setPregnancyDetails] = useState({
     weeks: 0,
     days: 0,
+    displayMonths: 0,
+    displayRemainingDays: 0,
     totalDays: 0,
-    months: 0,
     trimester: 1,
     countdown: 0,
+    countdownMonths: 0,
+    countdownRemainingDays: 0,
     progress: 0,
   })
 
@@ -84,14 +98,18 @@ export default function App() {
 
     // আজকের দিন পর্যন্ত মোট দিনের সংখ্যা গণনা
     const diffTime = today.getTime() - conceptionDate.getTime()
-    const totalDaysElapsed = Math.floor(diffTime / (1000 * 60 * 60 * 24))
+    const totalDaysElapsed = Math.max(
+      0,
+      Math.floor(diffTime / (1000 * 60 * 60 * 24))
+    )
 
     // সপ্তাহ ও দিনে রূপান্তর
     const weeks = Math.floor(totalDaysElapsed / 7)
     const days = totalDaysElapsed % 7
 
-    // মাসে রূপান্তর (গড়ে ৩০.৪ দিন প্রতি মাসে)
-    const months = Math.floor(totalDaysElapsed / 30.4)
+    // মাস ও অবশিষ্ট দিনের গণনা (প্রদর্শনের জন্য)
+    const displayMonths = Math.floor(totalDaysElapsed / 30)
+    const displayRemainingDays = totalDaysElapsed % 30
 
     // ট্রাইমিস্টার গণনা
     let trimester = 1
@@ -103,7 +121,14 @@ export default function App() {
 
     // ডেলিভারি পর্যন্ত কাউন্টডাউন
     const countdownDiffTime = estimatedDueDate.getTime() - today.getTime()
-    const countdownDays = Math.ceil(countdownDiffTime / (1000 * 60 * 60 * 24))
+    const countdownDays =
+      countdownDiffTime > 0
+        ? Math.ceil(countdownDiffTime / (1000 * 60 * 60 * 24))
+        : 0
+
+    // কাউন্টডাউনকে মাস ও দিনে ভাগ করা
+    const countdownMonths = Math.floor(countdownDays / 30)
+    const countdownRemainingDays = countdownDays % 30
 
     // প্রেগন্যান্সির অগ্রগতি (সাধারণত ৪০ সপ্তাহ বা ২৮০ দিন ধরা হয়)
     const progressPercentage = Math.min((totalDaysElapsed / 280) * 100, 100)
@@ -111,10 +136,13 @@ export default function App() {
     setPregnancyDetails({
       weeks,
       days,
+      displayMonths,
+      displayRemainingDays,
       totalDays: totalDaysElapsed,
-      months,
       trimester,
-      countdown: countdownDays > 0 ? countdownDays : 0,
+      countdown: countdownDays,
+      countdownMonths,
+      countdownRemainingDays,
       progress: progressPercentage,
     })
   }
@@ -153,21 +181,24 @@ export default function App() {
           <div className='flex justify-center items-baseline space-x-4'>
             <div>
               <p className='text-4xl font-bold text-pink-600'>
-                {pregnancyDetails.weeks}
+                {toBengaliNumber(pregnancyDetails.weeks)}
               </p>
               <p className='text-sm text-gray-600'>সপ্তাহ</p>
             </div>
             <div>
               <p className='text-4xl font-bold text-pink-600'>
-                {pregnancyDetails.days}
+                {toBengaliNumber(pregnancyDetails.days)}
               </p>
               <p className='text-sm text-gray-600'>দিন</p>
             </div>
           </div>
-          <p className='text-sm text-gray-500 mt-3'>
-            (মোট {pregnancyDetails.months} মাস এবং {pregnancyDetails.totalDays}{' '}
-            দিন)
-          </p>
+          <div className='text-sm text-gray-500 mt-3 space-y-1'>
+            <p>
+              ({toBengaliNumber(pregnancyDetails.displayMonths)} মাস ও{' '}
+              {toBengaliNumber(pregnancyDetails.displayRemainingDays)} দিন)
+            </p>
+            <p>অথবা, মোট {toBengaliNumber(pregnancyDetails.totalDays)} দিন</p>
+          </div>
         </div>
 
         {/* Countdown */}
@@ -179,12 +210,16 @@ export default function App() {
             </h2>
           </div>
           <p className='text-5xl font-bold text-blue-600'>
-            {pregnancyDetails.countdown}
+            {toBengaliNumber(pregnancyDetails.countdown)}
           </p>
           <p className='text-md text-gray-600'>দিন বাকি</p>
-          <p className='text-sm text-gray-500 mt-2'>
-            সম্ভাব্য তারিখ: ১২ মার্চ, ২০২৬
-          </p>
+          <div className='text-sm text-gray-500 mt-2 space-y-1'>
+            <p>
+              (অথবা, {toBengaliNumber(pregnancyDetails.countdownMonths)} মাস ও{' '}
+              {toBengaliNumber(pregnancyDetails.countdownRemainingDays)} দিন)
+            </p>
+            <p>সম্ভাব্য তারিখ: ১২ মার্চ, ২০২৬</p>
+          </div>
         </div>
 
         {/* Progress Bar and Trimester */}
@@ -192,7 +227,7 @@ export default function App() {
           <div className='flex justify-between mb-1'>
             <span className='text-base font-medium text-gray-700'>অগ্রগতি</span>
             <span className='text-sm font-medium text-gray-700'>
-              {Math.round(pregnancyDetails.progress)}%
+              {toBengaliNumber(Math.round(pregnancyDetails.progress))}%
             </span>
           </div>
           <div className='w-full bg-gray-200 rounded-full h-4'>
@@ -202,11 +237,11 @@ export default function App() {
             ></div>
           </div>
           <p className='text-center text-gray-600 mt-2'>
-            আপনি এখন{' '}
+            গর্ভাবস্থার সফর এখন{' '}
             <span className='font-bold text-purple-600'>
-              {pregnancyDetails.trimester}ম
+              {toBengaliNumber(pregnancyDetails.trimester)}ম
             </span>{' '}
-            ট্রাইমেস্টারে আছেন।
+            ধাপে রয়েছে।
           </p>
         </div>
       </div>
