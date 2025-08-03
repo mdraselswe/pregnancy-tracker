@@ -1,103 +1,215 @@
-import Image from "next/image";
+'use client'
+import React, { useState, useEffect } from 'react'
 
-export default function Home() {
+// SVG Icons for better UI
+const BabyIcon = () => (
+  <svg
+    xmlns='http://www.w3.org/2000/svg'
+    width='24'
+    height='24'
+    viewBox='0 0 24 24'
+    fill='none'
+    stroke='currentColor'
+    strokeWidth='2'
+    strokeLinecap='round'
+    strokeLinejoin='round'
+    className='text-pink-500'
+  >
+    <path d='M9 12h.01' />
+    <path d='M15 12h.01' />
+    <path d='M10 16c.5.3 1.2.5 2 .5s1.5-.2 2-.5' />
+    <path d='M19 6.3a9 9 0 0 1 1.8 3.9 2 2 0 0 1 0 3.6 9 9 0 0 1-17.6 0 2 2 0 0 1 0-3.6A9 9 0 0 1 12 3c2 0 3.8.6 5.3 1.7' />
+  </svg>
+)
+
+const CalendarIcon = () => (
+  <svg
+    xmlns='http://www.w3.org/2000/svg'
+    width='24'
+    height='24'
+    viewBox='0 0 24 24'
+    fill='none'
+    stroke='currentColor'
+    strokeWidth='2'
+    strokeLinecap='round'
+    strokeLinejoin='round'
+    className='text-blue-500'
+  >
+    <rect width='18' height='18' x='3' y='4' rx='2' ry='2' />
+    <line x1='16' x2='16' y1='2' y2='6' />
+    <line x1='8' x2='8' y1='2' y2='6' />
+    <line x1='3' x2='21' y1='10' y2='10' />
+  </svg>
+)
+
+const HeartIcon = () => (
+  <svg
+    xmlns='http://www.w3.org/2000/svg'
+    width='24'
+    height='24'
+    viewBox='0 0 24 24'
+    fill='currentColor'
+    className='text-red-500'
+  >
+    <path d='M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z' />
+  </svg>
+)
+
+// Main App Component
+export default function App() {
+  const [pregnancyDetails, setPregnancyDetails] = useState({
+    weeks: 0,
+    days: 0,
+    totalDays: 0,
+    months: 0,
+    trimester: 1,
+    countdown: 0,
+    progress: 0,
+  })
+
+  // --- Calculation Logic ---
+  const calculateDetails = () => {
+    // প্রদত্ত ডেটা অনুযায়ী তারিখ সেট করা
+    const ultrasoundDate = new Date('2025-07-21T00:00:00')
+    const gestationAtUltrasoundInDays = 6 * 7 + 4 // ৬ সপ্তাহ ৪ দিন = ৪৬ দিন
+    const estimatedDueDate = new Date('2026-03-12T00:00:00')
+
+    // গর্ভধারণের শুরুর আনুমানিক তারিখ গণনা
+    const conceptionDate = new Date(ultrasoundDate)
+    conceptionDate.setDate(
+      ultrasoundDate.getDate() - gestationAtUltrasoundInDays
+    )
+
+    const today = new Date()
+
+    // আজকের দিন পর্যন্ত মোট দিনের সংখ্যা গণনা
+    const diffTime = today.getTime() - conceptionDate.getTime()
+    const totalDaysElapsed = Math.floor(diffTime / (1000 * 60 * 60 * 24))
+
+    // সপ্তাহ ও দিনে রূপান্তর
+    const weeks = Math.floor(totalDaysElapsed / 7)
+    const days = totalDaysElapsed % 7
+
+    // মাসে রূপান্তর (গড়ে ৩০.৪ দিন প্রতি মাসে)
+    const months = Math.floor(totalDaysElapsed / 30.4)
+
+    // ট্রাইমিস্টার গণনা
+    let trimester = 1
+    if (weeks >= 14 && weeks <= 27) {
+      trimester = 2
+    } else if (weeks > 27) {
+      trimester = 3
+    }
+
+    // ডেলিভারি পর্যন্ত কাউন্টডাউন
+    const countdownDiffTime = estimatedDueDate.getTime() - today.getTime()
+    const countdownDays = Math.ceil(countdownDiffTime / (1000 * 60 * 60 * 24))
+
+    // প্রেগন্যান্সির অগ্রগতি (সাধারণত ৪০ সপ্তাহ বা ২৮০ দিন ধরা হয়)
+    const progressPercentage = Math.min((totalDaysElapsed / 280) * 100, 100)
+
+    setPregnancyDetails({
+      weeks,
+      days,
+      totalDays: totalDaysElapsed,
+      months,
+      trimester,
+      countdown: countdownDays > 0 ? countdownDays : 0,
+      progress: progressPercentage,
+    })
+  }
+
+  useEffect(() => {
+    calculateDetails()
+    // প্রতি মিনিটে ডেটা আপডেট করার জন্য একটি ইন্টারভাল সেট করা হলো
+    const interval = setInterval(calculateDetails, 60000)
+
+    // কম্পোনেন্ট আনমাউন্ট হলে ইন্টারভাল ক্লিয়ার করা হবে
+    return () => clearInterval(interval)
+  }, [])
+
+  // --- UI Rendering ---
   return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-              src/app/page.js
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
-
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+    <div className='bg-pink-50 min-h-screen flex items-center justify-center p-4 font-sans'>
+      <div className='w-full max-w-md bg-white rounded-2xl shadow-lg p-6 md:p-8 space-y-6 transform transition-all hover:shadow-2xl'>
+        <div className='text-center'>
+          <div className='flex justify-center items-center gap-2'>
+            <HeartIcon />
+            <h1 className='text-2xl md:text-3xl font-bold text-gray-800'>
+              প্রেগন্যান্সি ট্র্যাকার
+            </h1>
+          </div>
+          <p className='text-gray-500 mt-1'>আমাদের ছোট্ট অতিথির জন্য অপেক্ষা</p>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+
+        {/* Current Gestational Age */}
+        <div className='bg-pink-100/50 border border-pink-200 rounded-xl p-4 text-center'>
+          <div className='flex justify-center items-center gap-2 mb-2'>
+            <BabyIcon />
+            <h2 className='text-lg font-semibold text-pink-800'>
+              গর্ভধারণের বর্তমান বয়স
+            </h2>
+          </div>
+          <div className='flex justify-center items-baseline space-x-4'>
+            <div>
+              <p className='text-4xl font-bold text-pink-600'>
+                {pregnancyDetails.weeks}
+              </p>
+              <p className='text-sm text-gray-600'>সপ্তাহ</p>
+            </div>
+            <div>
+              <p className='text-4xl font-bold text-pink-600'>
+                {pregnancyDetails.days}
+              </p>
+              <p className='text-sm text-gray-600'>দিন</p>
+            </div>
+          </div>
+          <p className='text-sm text-gray-500 mt-3'>
+            (মোট {pregnancyDetails.months} মাস এবং {pregnancyDetails.totalDays}{' '}
+            দিন)
+          </p>
+        </div>
+
+        {/* Countdown */}
+        <div className='bg-blue-100/50 border border-blue-200 rounded-xl p-4 text-center'>
+          <div className='flex justify-center items-center gap-2 mb-2'>
+            <CalendarIcon />
+            <h2 className='text-lg font-semibold text-blue-800'>
+              প্রসবের কাউন্টডাউন
+            </h2>
+          </div>
+          <p className='text-5xl font-bold text-blue-600'>
+            {pregnancyDetails.countdown}
+          </p>
+          <p className='text-md text-gray-600'>দিন বাকি</p>
+          <p className='text-sm text-gray-500 mt-2'>
+            সম্ভাব্য তারিখ: ১২ মার্চ, ২০২৬
+          </p>
+        </div>
+
+        {/* Progress Bar and Trimester */}
+        <div>
+          <div className='flex justify-between mb-1'>
+            <span className='text-base font-medium text-gray-700'>অগ্রগতি</span>
+            <span className='text-sm font-medium text-gray-700'>
+              {Math.round(pregnancyDetails.progress)}%
+            </span>
+          </div>
+          <div className='w-full bg-gray-200 rounded-full h-4'>
+            <div
+              className='bg-gradient-to-r from-pink-400 to-purple-500 h-4 rounded-full transition-all duration-500'
+              style={{ width: `${pregnancyDetails.progress}%` }}
+            ></div>
+          </div>
+          <p className='text-center text-gray-600 mt-2'>
+            আপনি এখন{' '}
+            <span className='font-bold text-purple-600'>
+              {pregnancyDetails.trimester}ম
+            </span>{' '}
+            ট্রাইমেস্টারে আছেন।
+          </p>
+        </div>
+      </div>
     </div>
-  );
+  )
 }
