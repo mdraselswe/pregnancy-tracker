@@ -11,8 +11,47 @@ const toBengaliNumber = (num) => {
   )
 }
 
-// --- Data for Tabs ---
+// --- Data for Tabs (Remains the same) ---
 const weeklyData = {
+  1: {
+    week: 1,
+    baby_size_fruit: 'প্রযোজ্য নয়',
+    baby_size_measurement: 'প্রযোজ্য নয়',
+    baby_development:
+      'আপনার শেষ মাসিকের প্রথম দিন থেকে গর্ভাবস্থার গণনা শুরু হয়। এই সপ্তাহে, আপনার শরীর ডিম্বস্ফোটনের জন্য প্রস্তুতি নিচ্ছে।',
+    mother_symptoms: 'মাসিকের স্বাভাবিক লক্ষণসমূহ।',
+    tip: 'স্বাস্থ্যকর জীবনযাপন শুরু করুন এবং প্রি-ন্যাটাল ভিটামিন (ফলিক অ্যাসিড) গ্রহণ করার কথা ভাবুন।',
+  },
+  2: {
+    week: 2,
+    baby_size_fruit: 'প্রযোজ্য নয়',
+    baby_size_measurement: 'প্রযোজ্য নয়',
+    baby_development:
+      'এই সপ্তাহের শেষে ডিম্বস্ফোটন হতে পারে এবং শুক্রাণুর সাথে ডিম্বাণুর মিলন (নিষেক) ঘটতে পারে।',
+    mother_symptoms:
+      'ডিম্বস্ফোটনের লক্ষণ, যেমন শরীরের তাপমাত্রা সামান্য বৃদ্ধি পাওয়া।',
+    tip: 'এটি গর্ভধারণের জন্য গুরুত্বপূর্ণ সময়।',
+  },
+  3: {
+    week: 3,
+    baby_size_fruit: 'একটি পপি বীজের মতো',
+    baby_size_measurement: 'অত্যন্ত ক্ষুদ্র',
+    baby_development:
+      'নিষিক্ত ডিম্বাণুটি (জাইগোট) জরায়ুর দেয়ালে নিজেকে স্থাপন করে (ইমপ্লান্টেশন)। কোষ বিভাজন দ্রুত গতিতে চলতে থাকে।',
+    mother_symptoms:
+      'হালকা স্পটিং বা ইমপ্লান্টেশন ব্লিডিং হতে পারে, তবে সবাই এটি অনুভব করে না।',
+    tip: 'অ্যালকোহল এবং ধূমপান থেকে সম্পূর্ণ বিরত থাকুন।',
+  },
+  4: {
+    week: 4,
+    baby_size_fruit: 'একটি পোস্তদানার মতো',
+    baby_size_measurement: 'প্রায় ০.০৪ ইঞ্চি',
+    baby_development:
+      'অ্যামনিওটিক স্যাক এবং প্লাসেন্টা তৈরি হচ্ছে। ভ্রূণটি এখন তিনটি স্তরে বিভক্ত, যা থেকে অঙ্গ-প্রত্যঙ্গ তৈরি হবে।',
+    mother_symptoms:
+      'পিরিয়ড মিস হতে পারে। হোম প্রেগন্যান্সি টেস্টে পজিটিভ ফলাফল আসার সম্ভাবনা আছে।',
+    tip: 'প্রেগন্যান্সি টেস্ট পজিটিভ হলে ডাক্তারের সাথে যোগাযোগ করে প্রথম সাক্ষাতের সময় নির্ধারণ করুন।',
+  },
   5: {
     week: 5,
     baby_size_fruit: 'আপেল বীচির মতো',
@@ -654,7 +693,7 @@ const islamicData = {
     },
     {
       arabic:
-        'رَبِّ اجْعَلْنِي مُقِيمَ الصَّلَاةِ وَمِن ذُرِّيَّتِي ۚ رَبَّنَا وَتَقَبَّلْ دُعَاءِ',
+        'رَبِّ اجْعَلْنِي مُقِيمَ الصَّلَاةِ وَمِن ذُرِّيَّتِي ۚ رَبَّnā وَتَقَبَّلْ دُعَاءِ',
       pronunciation:
         "রব্বিজ 'আলনি মুক্বিমাস সালাতি ওয়া মিন যুররিয়্যাতি, রব্বানা ওয়া তাক্বাব্বাল দু'আ।",
       translation:
@@ -787,9 +826,184 @@ const CautionIcon = () => (
     <line x1='12' x2='12.01' y1='17' y2='17'></line>
   </svg>
 )
+const ResetIcon = () => (
+  <svg
+    xmlns='http://www.w3.org/2000/svg'
+    width='24'
+    height='24'
+    viewBox='0 0 24 24'
+    fill='none'
+    stroke='currentColor'
+    strokeWidth='2'
+    strokeLinecap='round'
+    strokeLinejoin='round'
+    className='text-gray-500 hover:text-red-500 transition-colors'
+  >
+    <polyline points='23 4 23 10 17 10'></polyline>
+    <polyline points='1 20 1 14 7 14'></polyline>
+    <path d='M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15'></path>
+  </svg>
+)
 
-// --- Main App Component ---
-export default function App() {
+// --- DataInputFormComponent ---
+const DataInputForm = ({ onDataSave }) => {
+  const [method, setMethod] = useState('lmp') // 'lmp' or 'ultrasound'
+  const [lmpDate, setLmpDate] = useState('')
+  const [ultrasoundDate, setUltrasoundDate] = useState('')
+  const [weeks, setWeeks] = useState('')
+  const [days, setDays] = useState('')
+  const [error, setError] = useState('')
+
+  const handleSubmit = (e) => {
+    e.preventDefault()
+    setError('')
+    let pregnancyStartDate
+    let estimatedDueDate
+
+    try {
+      if (method === 'lmp') {
+        if (!lmpDate) {
+          setError('অনুগ্রহ করে শেষ মাসিকের প্রথম দিনটি নির্বাচন করুন।')
+          return
+        }
+        const lmp = new Date(lmpDate)
+        lmp.setHours(0, 0, 0, 0)
+        pregnancyStartDate = new Date(lmp)
+        estimatedDueDate = new Date(lmp)
+        estimatedDueDate.setDate(lmp.getDate() + 280)
+      } else {
+        if (!ultrasoundDate || !weeks || !days) {
+          setError('অনুগ্রহ করে আলট্রাসাউন্ডের সকল তথ্য পূরণ করুন।')
+          return
+        }
+        const uDate = new Date(ultrasoundDate)
+        uDate.setHours(0, 0, 0, 0)
+        const gestationInDays = parseInt(weeks) * 7 + parseInt(days)
+        pregnancyStartDate = new Date(uDate)
+        pregnancyStartDate.setDate(uDate.getDate() - gestationInDays)
+        estimatedDueDate = new Date(pregnancyStartDate)
+        estimatedDueDate.setDate(pregnancyStartDate.getDate() + 280)
+      }
+
+      const userData = {
+        pregnancyStartDate: pregnancyStartDate.toISOString(),
+        estimatedDueDate: estimatedDueDate.toISOString(),
+      }
+
+      localStorage.setItem('pregnancyUserData', JSON.stringify(userData))
+      onDataSave(userData)
+    } catch (err) {
+      setError('তারিখ গণনায় সমস্যা হয়েছে। অনুগ্রহ করে সঠিক তথ্য দিন।')
+    }
+  }
+
+  return (
+    <div className='bg-pink-50 min-h-screen flex items-center justify-center p-4 font-sans'>
+      <div className='w-full max-w-md bg-white md:rounded-2xl md:shadow-xl p-8 space-y-6 animate-fade-in'>
+        <div className='text-center'>
+          <h1 className='text-2xl font-bold text-gray-800'>স্বাগতম!</h1>
+          <p className='text-gray-500 mt-2'>
+            আপনার প্রেগন্যান্সি ট্র্যাক করতে, অনুগ্রহ করে নিচের তথ্যগুলো দিন।
+          </p>
+        </div>
+
+        <div className='flex bg-gray-100 rounded-full p-1'>
+          <button
+            onClick={() => setMethod('lmp')}
+            className={`w-1/2 py-2 text-sm font-medium rounded-full transition-colors cursor-pointer ${
+              method === 'lmp' ? 'bg-pink-500 text-white' : 'text-gray-600'
+            }`}
+          >
+            শেষ মাসিক (LMP)
+          </button>
+          <button
+            onClick={() => setMethod('ultrasound')}
+            className={`w-1/2 py-2 text-sm font-medium rounded-full transition-colors cursor-pointer ${
+              method === 'ultrasound'
+                ? 'bg-pink-500 text-white'
+                : 'text-gray-600'
+            }`}
+          >
+            আলট্রাসাউন্ড
+          </button>
+        </div>
+
+        <form onSubmit={handleSubmit} className='space-y-4'>
+          {method === 'lmp' ? (
+            <div>
+              <label
+                htmlFor='lmpDate'
+                className='block text-sm font-medium text-gray-700'
+              >
+                শেষ মাসিকের প্রথম দিন
+              </label>
+              <input
+                type='date'
+                id='lmpDate'
+                value={lmpDate}
+                onChange={(e) => setLmpDate(e.target.value)}
+                className={`mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-pink-500 focus:border-pink-500 ${
+                  !lmpDate ? 'text-gray-500' : 'text-gray-900'
+                }`}
+              />
+            </div>
+          ) : (
+            <div className='space-y-4'>
+              <div>
+                <label
+                  htmlFor='ultrasoundDate'
+                  className='block text-sm font-medium text-gray-700'
+                >
+                  আলট্রাসাউন্ডের তারিখ
+                </label>
+                <input
+                  type='date'
+                  id='ultrasoundDate'
+                  value={ultrasoundDate}
+                  onChange={(e) => setUltrasoundDate(e.target.value)}
+                  className={`mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-pink-500 focus:border-pink-500 ${
+                    !ultrasoundDate ? 'text-gray-500' : 'text-gray-900'
+                  }`}
+                />
+              </div>
+              <div>
+                <label className='block text-sm font-medium text-gray-700'>
+                  রিপোর্ট অনুযায়ী বাচ্চার বয়স
+                </label>
+                <div className='flex gap-4 mt-1'>
+                  <input
+                    type='number'
+                    placeholder='সপ্তাহ'
+                    value={weeks}
+                    onChange={(e) => setWeeks(e.target.value)}
+                    className='w-1/2 px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-pink-500 focus:border-pink-500 placeholder-gray-600 text-gray-900'
+                  />
+                  <input
+                    type='number'
+                    placeholder='দিন'
+                    value={days}
+                    onChange={(e) => setDays(e.target.value)}
+                    className='w-1/2 px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-pink-500 focus:border-pink-500 placeholder-gray-600 text-gray-900'
+                  />
+                </div>
+              </div>
+            </div>
+          )}
+          {error && <p className='text-red-500 text-sm'>{error}</p>}
+          <button
+            type='submit'
+            className='w-full py-3 px-4 bg-pink-500 text-white font-semibold rounded-lg shadow-md hover:bg-pink-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-pink-500 transition-transform transform hover:scale-105 cursor-pointer'
+          >
+            শুরু করুন
+          </button>
+        </form>
+      </div>
+    </div>
+  )
+}
+
+// --- TrackerComponent ---
+const Tracker = ({ userData, onReset }) => {
   const [activeTab, setActiveTab] = useState('home')
   const [pregnancyDetails, setPregnancyDetails] = useState({
     weeks: 0,
@@ -804,22 +1018,28 @@ export default function App() {
     progress: 0,
   })
 
-  // --- Calculation Logic ---
+  const [touchStartX, setTouchStartX] = useState(null)
+  const [touchEndX, setTouchEndX] = useState(null)
+  const minSwipeDistance = 50
+  const tabs = ['home', 'weekly', 'tips', 'islamic']
+
   useEffect(() => {
     const calculateDetails = () => {
-      const ultrasoundDate = new Date('2025-07-21T00:00:00')
-      const gestationAtUltrasoundInDays = 6 * 7 + 4
-      const estimatedDueDate = new Date('2026-03-12T00:00:00')
-      const conceptionDate = new Date(ultrasoundDate)
-      conceptionDate.setDate(
-        ultrasoundDate.getDate() - gestationAtUltrasoundInDays
-      )
+      const pregnancyStartDate = new Date(userData.pregnancyStartDate)
+      const estimatedDueDate = new Date(userData.estimatedDueDate)
+
       const today = new Date()
-      const diffTime = today.getTime() - conceptionDate.getTime()
-      const totalDaysElapsed = Math.max(
-        0,
-        Math.floor(diffTime / (1000 * 60 * 60 * 24))
-      )
+
+      const startOfDay = (date) => {
+        const newDate = new Date(date)
+        newDate.setHours(0, 0, 0, 0)
+        return newDate
+      }
+
+      const diffTime =
+        startOfDay(today).getTime() - startOfDay(pregnancyStartDate).getTime()
+      const totalDaysElapsed = Math.round(diffTime / (1000 * 60 * 60 * 24))
+
       const weeks = Math.floor(totalDaysElapsed / 7)
       const days = totalDaysElapsed % 7
       const displayMonths = Math.floor(totalDaysElapsed / 30)
@@ -827,11 +1047,14 @@ export default function App() {
       let trimester = 1
       if (weeks >= 14 && weeks <= 27) trimester = 2
       else if (weeks > 27) trimester = 3
-      const countdownDiffTime = estimatedDueDate.getTime() - today.getTime()
-      const countdownDays =
-        countdownDiffTime > 0
-          ? Math.ceil(countdownDiffTime / (1000 * 60 * 60 * 24))
-          : 0
+
+      const countdownDiffTime =
+        startOfDay(estimatedDueDate).getTime() - startOfDay(today).getTime()
+      const countdownDays = Math.max(
+        0,
+        Math.round(countdownDiffTime / (1000 * 60 * 60 * 24))
+      )
+
       const countdownMonths = Math.floor(countdownDays / 30)
       const countdownRemainingDays = countdownDays % 30
       const progressPercentage = Math.min((totalDaysElapsed / 280) * 100, 100)
@@ -847,18 +1070,50 @@ export default function App() {
         countdownMonths,
         countdownRemainingDays,
         progress: progressPercentage,
+        estimatedDueDate: estimatedDueDate.toLocaleDateString('bn-BD', {
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric',
+        }),
       })
     }
 
     calculateDetails()
     const interval = setInterval(calculateDetails, 60000)
     return () => clearInterval(interval)
-  }, [])
+  }, [userData])
+
+  const onTouchStart = (e) => {
+    setTouchEndX(null)
+    setTouchStartX(e.targetTouches[0].clientX)
+  }
+
+  const onTouchMove = (e) => {
+    setTouchEndX(e.targetTouches[0].clientX)
+  }
+
+  const onTouchEnd = () => {
+    if (!touchStartX || !touchEndX) return
+    const distance = touchStartX - touchEndX
+    const isLeftSwipe = distance > minSwipeDistance
+    const isRightSwipe = distance < -minSwipeDistance
+
+    if (isLeftSwipe || isRightSwipe) {
+      const currentIndex = tabs.indexOf(activeTab)
+      let nextIndex
+      if (isLeftSwipe) {
+        nextIndex = (currentIndex + 1) % tabs.length
+      } else {
+        nextIndex = (currentIndex - 1 + tabs.length) % tabs.length
+      }
+      setActiveTab(tabs[nextIndex])
+    }
+  }
 
   const TabButton = ({ tabName, label }) => (
     <button
       onClick={() => setActiveTab(tabName)}
-      className={`relative px-3 py-2 text-xs sm:text-sm font-medium transition-colors duration-300 whitespace-nowrap focus:outline-none ${
+      className={`relative px-3 py-2 text-xs sm:text-sm font-medium transition-colors duration-300 whitespace-nowrap focus:outline-none cursor-pointer ${
         activeTab === tabName
           ? 'text-pink-600'
           : 'text-gray-500 hover:text-pink-500'
@@ -938,7 +1193,7 @@ export default function App() {
                   ও {toBengaliNumber(pregnancyDetails.countdownRemainingDays)}{' '}
                   দিন)
                 </p>
-                <p>সম্ভাব্য তারিখ: ১২ মার্চ, ২০২৬</p>
+                <p>সম্ভাব্য তারিখ: {pregnancyDetails.estimatedDueDate}</p>
               </div>
             </div>
             {/* Progress Bar and Trimester */}
@@ -973,8 +1228,6 @@ export default function App() {
             <h3 className='text-xl font-bold text-center text-gray-800'>
               সপ্তাহ {toBengaliNumber(currentWeekData.week)}: কী ঘটছে?
             </h3>
-
-            {/* Baby's Size */}
             <div className='bg-purple-100/50 border border-purple-200 rounded-xl p-4'>
               <h4 className='font-semibold text-purple-800 mb-2'>শিশুর আকার</h4>
               <p className='text-gray-700'>
@@ -985,8 +1238,6 @@ export default function App() {
                 ({currentWeekData.baby_size_measurement})
               </p>
             </div>
-
-            {/* Baby's Development */}
             <div className='bg-sky-100/50 border border-sky-200 rounded-xl p-4'>
               <h4 className='font-semibold text-sky-800 mb-2'>
                 শিশুর বৃদ্ধি ও বিকাশ
@@ -995,16 +1246,12 @@ export default function App() {
                 {currentWeekData.baby_development}
               </p>
             </div>
-
-            {/* Mother's Symptoms */}
             <div className='bg-green-100/50 border border-green-200 rounded-xl p-4'>
               <h4 className='font-semibold text-green-800 mb-2'>
                 মায়ের শারীরিক পরিবর্তন
               </h4>
               <p className='text-gray-700'>{currentWeekData.mother_symptoms}</p>
             </div>
-
-            {/* Tip of the week */}
             <div className='bg-yellow-100/50 border border-yellow-200 rounded-xl p-4'>
               <h4 className='font-semibold text-yellow-800 mb-2'>
                 এই সপ্তাহের টিপস
@@ -1019,8 +1266,6 @@ export default function App() {
             <h3 className='text-xl font-bold text-center text-gray-800'>
               {detailedTipsData.title}
             </h3>
-
-            {/* General Advice */}
             <div>
               <h4 className='text-lg font-semibold text-gray-700 mb-3 pb-2 border-b-2 border-pink-200'>
                 সাধারণ যত্ন ও পরামর্শ
@@ -1031,8 +1276,6 @@ export default function App() {
                 ))}
               </ul>
             </div>
-
-            {/* Food Categories */}
             {detailedTipsData.categories.map((category, catIndex) => (
               <div key={catIndex}>
                 <h4 className='text-lg font-semibold text-gray-700 mb-3 pb-2 border-b-2 border-pink-200'>
@@ -1089,7 +1332,6 @@ export default function App() {
             <h3 className='text-xl font-bold text-center text-gray-800'>
               ইসলামিক করনীয় ও দোয়া
             </h3>
-            {/* Duas for Child */}
             <div className='bg-teal-100/50 border border-teal-200 rounded-xl p-4'>
               <h4 className='font-semibold text-teal-800 mb-3 text-lg'>
                 সন্তানের জন্য দোয়া
@@ -1116,7 +1358,6 @@ export default function App() {
                 </div>
               ))}
             </div>
-            {/* Evening Duas */}
             <div className='bg-indigo-100/50 border border-indigo-200 rounded-xl p-4'>
               <h4 className='font-semibold text-indigo-800 mb-3 text-lg'>
                 সকাল-সন্ধ্যার দোয়া
@@ -1145,7 +1386,6 @@ export default function App() {
                 </div>
               ))}
             </div>
-            {/* Amols */}
             <div className='bg-sky-100/50 border border-sky-200 rounded-xl p-4'>
               <h4 className='font-semibold text-sky-800 mb-2 text-lg'>
                 গর্ভাবস্থায় আমল
@@ -1156,13 +1396,12 @@ export default function App() {
                 ))}
               </ul>
             </div>
-            {/* Hadith */}
             <div className='bg-orange-100/50 border border-orange-200 rounded-xl p-4 text-center'>
               <h4 className='font-semibold text-orange-800 mb-2 text-lg'>
                 প্রাসঙ্গিক হাদিস
               </h4>
               <p className='text-gray-700 italic'>
-                &quot;{islamicData.hadith.text}&quot;
+                {islamicData.hadith.text}
               </p>
               <p className='text-xs text-gray-500 mt-1'>
                 ({islamicData.hadith.reference})
@@ -1176,9 +1415,9 @@ export default function App() {
   }
 
   return (
-    <div className='bg-pink-50 min-h-screen font-sans'>
-      <div className='w-full max-w-md mx-auto bg-white shadow-xl rounded-b-2xl'>
-        <div className='p-6 md:p-8 pb-4'>
+    <div className='bg-pink-50 min-h-screen font-sans md:py-8'>
+      <div className='w-full max-w-md mx-auto bg-white md:shadow-xl md:rounded-2xl'>
+        <div className='p-6 md:p-8 pb-4 relative'>
           <div className='text-center'>
             <div className='flex justify-center items-center gap-2'>
               <HeartIcon />
@@ -1190,6 +1429,13 @@ export default function App() {
               আমাদের ছোট্ট অতিথির জন্য অপেক্ষা
             </p>
           </div>
+          <button
+            onClick={onReset}
+            className='absolute top-4 right-4 p-2 rounded-full hover:bg-gray-100 cursor-pointer'
+            title='তথ্য রিসেট করুন'
+          >
+            <ResetIcon />
+          </button>
         </div>
 
         <div className='sticky top-0 z-10 bg-white/80 backdrop-blur-sm border-b border-gray-200'>
@@ -1201,23 +1447,61 @@ export default function App() {
           </div>
         </div>
 
-        <div className='p-6 md:p-8'>{renderContent()}</div>
+        <div
+          className='p-6 md:p-8 pb-12'
+          onTouchStart={onTouchStart}
+          onTouchMove={onTouchMove}
+          onTouchEnd={onTouchEnd}
+        >
+          {renderContent()}
+        </div>
       </div>
-      <style jsx global>{`
-        @keyframes fadeIn {
-          from {
-            opacity: 0;
-            transform: translateY(10px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-        .animate-fade-in {
-          animation: fadeIn 0.5s ease-in-out;
-        }
-      `}</style>
     </div>
   )
+}
+
+// --- Main App Component ---
+export default function App() {
+  const [userData, setUserData] = useState(null)
+  const [isLoading, setIsLoading] = useState(true)
+
+  useEffect(() => {
+    try {
+      const savedData = localStorage.getItem('pregnancyUserData')
+      if (savedData) {
+        setUserData(JSON.parse(savedData))
+      }
+    } catch (error) {
+      console.error('Failed to parse user data from localStorage', error)
+      localStorage.removeItem('pregnancyUserData')
+    }
+    setIsLoading(false)
+  }, [])
+
+  const handleDataSave = (data) => {
+    setUserData(data)
+  }
+
+  const handleReset = () => {
+    if (
+      window.confirm('আপনি কি আপনার সকল তথ্য মুছে ফেলে নতুন করে শুরু করতে চান?')
+    ) {
+      localStorage.removeItem('pregnancyUserData')
+      setUserData(null)
+    }
+  }
+
+  if (isLoading) {
+    return (
+      <div className='bg-pink-50 min-h-screen flex items-center justify-center font-sans'>
+        <p>লোড হচ্ছে...</p>
+      </div>
+    )
+  }
+
+  if (!userData) {
+    return <DataInputForm onDataSave={handleDataSave} />
+  }
+
+  return <Tracker userData={userData} onReset={handleReset} />
 }
